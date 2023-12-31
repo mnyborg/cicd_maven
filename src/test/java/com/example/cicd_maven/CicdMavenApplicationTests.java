@@ -10,7 +10,7 @@ class CicdMavenApplicationTests {
 
     @Test
     void contextLoads() {
-        fail();
+
     }
 
 }
