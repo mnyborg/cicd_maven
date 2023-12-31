@@ -7,7 +7,6 @@ on:
     branches: [ "main" ]
   # manually triggering workflow
   workflow_dispatch:
-    branches: [ "main" ]
 
 
 jobs:
@@ -16,27 +15,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3 # actions can be found in https://github.com/marketplace
+      # actions can be found in https://github.com/marketplace
+      - uses: actions/checkout@v3
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: maven # caches all dependencies
+          # caches all dependencies
+          cache: maven
       - name: Build with Maven
-        run: mvn -B package --file pom.xml # generates .jar file in target folder
+        # generates .jar file in target folder
+        run: mvn -B package --file pom.xml
 
 
   publish-job: # CD part
     runs-on: ubuntu-latest
-    needs: build_test # this job is only executed if build_test was succesfull
+    # this job is only executed if build_test was succesfull
+    needs: build_test
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-      - run: mvn --batch-mode --update-snapshots verify # update dependencies, and run integration tests
+        # update dependencies, and run integration tests
+      - run: mvn --batch-mode --update-snapshots verify
+        # copy jar file to staging folder
       - run: mkdir staging && cp target/*.jar staging
       - uses: actions/upload-artifact@v3
         with:
